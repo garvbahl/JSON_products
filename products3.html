@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>products3.html</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    select, button {
+      padding: 10px 14px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      border: none;
+      background-color: #2d89ef;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b5fbf;
+    }
+
+    #result {
+      margin-top: 30px;
+    }
+
+    .product-name {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      font-size: 18px;
+      color: #222;
+    }
+
+    .message {
+      text-align: center;
+      font-weight: bold;
+      color: #555;
+      margin-top: 20px;
+    }
+
+    .error {
+      text-align: center;
+      font-weight: bold;
+      color: red;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Filter Products by Category</h1>
+
+    <div class="controls">
+      <select id="categorySelect">
+        <option value="">Loading categories...</option>
+      </select>
+      <button onclick="filterProducts()">Filter</button>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    let allProducts = [];
+
+    async function loadProductsOnPage() {
+      const select = document.getElementById("categorySelect");
+      const resultDiv = document.getElementById("result");
+
+      try {
+        const response = await fetch("products.json");
+
+        if (!response.ok) {
+          throw new Error("Could not load products.json");
+        }
+
+        const data = await response.json();
+        allProducts = data.products;
+
+        // Collect unique categories from JSON
+        const categorySet = new Set();
+
+        allProducts.forEach(product => {
+          product.category.forEach(cat => {
+            categorySet.add(cat);
+          });
+        });
+
+        const categories = Array.from(categorySet).sort();
+
+        // Build dropdown options
+        select.innerHTML = `<option value="">Select a category</option>`;
+        categories.forEach(category => {
+          select.innerHTML += `<option value="${category}">${category}</option>`;
+        });
+
+        resultDiv.innerHTML = `<p class="message">Choose a category and click Filter.</p>`;
+      } catch (error) {
+        select.innerHTML = `<option value="">Could not load categories</option>`;
+        resultDiv.innerHTML = `<p class="error">Error loading product data.</p>`;
+        console.error(error);
+      }
+    }
+
+    function filterProducts() {
+      const selectedCategory = document.getElementById("categorySelect").value;
+      const resultDiv = document.getElementById("result");
+
+      if (!selectedCategory) {
+        resultDiv.innerHTML = `<p class="message">Please select a category first.</p>`;
+        return;
+      }
+
+      const matchingProducts = allProducts.filter(product =>
+        product.category.includes(selectedCategory)
+      );
+
+      if (matchingProducts.length === 0) {
+        resultDiv.innerHTML = `<p class="message">No products found in this category.</p>`;
+        return;
+      }
+
+      let output = "";
+      matchingProducts.forEach(product => {
+        output += `<div class="product-name">${product.name}</div>`;
+      });
+
+      resultDiv.innerHTML = output;
+    }
+
+    // Load JSON and populate dropdown when page opens
+    window.onload = loadProductsOnPage;
+  </script>
+</body>
+</html>

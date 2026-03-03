@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>api.html</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 30px;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 30px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 280px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #2d89ef;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1b5fbf;
+    }
+
+    #results {
+      margin-top: 10px;
+    }
+
+    .show-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .show-card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .show-card p {
+      margin: 6px 0;
+    }
+
+    .label {
+      font-weight: bold;
+    }
+
+    .summary {
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .info-box {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      line-height: 1.6;
+    }
+
+    .message, .error {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>TV Show Search</h1>
+
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Enter a TV show name" />
+      <button onclick="searchShows()">Search</button>
+    </div>
+
+    <div id="results"></div>
+
+    <div class="info-box">
+      <h2>About This API</h2>
+      <p><span class="label">API Selected:</span> TVMaze Show Search API</p>
+      <p><span class="label">Why I Selected It:</span> I chose it because it is simple to use, free, and lets users search for TV shows by name.</p>
+      <p><span class="label">Where I Found It:</span> TVMaze API documentation page.</p>
+      <p><span class="label">Parameters Used:</span> I used the <code>q</code> parameter in the query string. This is the search term entered by the user, such as <code>?q=friends</code>.</p>
+      <p><span class="label">Helpful Use Case:</span> This API would be useful for building a movie/TV discovery website where users can quickly search for shows and view information like genres, ratings, and summaries.</p>
+    </div>
+  </div>
+
+  <script>
+    async function searchShows() {
+      const query = document.getElementById("searchInput").value.trim();
+      const resultsDiv = document.getElementById("results");
+
+      if (!query) {
+        resultsDiv.innerHTML = `<p class="message">Please enter a show name first.</p>`;
+        return;
+      }
+
+      resultsDiv.innerHTML = `<p class="message">Loading results...</p>`;
+
+      try {
+        const response = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
+
+        if (!response.ok) {
+          throw new Error("API request failed.");
+        }
+
+        const data = await response.json();
+
+        if (data.length === 0) {
+          resultsDiv.innerHTML = `<p class="message">No shows found.</p>`;
+          return;
+        }
+
+        let output = "";
+
+        data.forEach(item => {
+          const show = item.show;
+          const genres = show.genres && show.genres.length > 0 ? show.genres.join(", ") : "N/A";
+          const rating = show.rating && show.rating.average ? show.rating.average : "N/A";
+          const language = show.language ? show.language : "N/A";
+          const premiered = show.premiered ? show.premiered : "N/A";
+          const summary = show.summary ? show.summary : "No summary available.";
+
+          output += `
+            <div class="show-card">
+              <h3>${show.name}</h3>
+              <p><span class="label">Language:</span> ${language}</p>
+              <p><span class="label">Genres:</span> ${genres}</p>
+              <p><span class="label">Rating:</span> ${rating}</p>
+              <p><span class="label">Premiered:</span> ${premiered}</p>
+              <div class="summary">
+                <span class="label">Summary:</span> ${summary}
+              </div>
+            </div>
+          `;
+        });
+
+        resultsDiv.innerHTML = output;
+      } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">There was an error retrieving data from the API.</p>`;
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>

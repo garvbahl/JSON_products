@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>products2.html</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      background-color: #2d89ef;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b5fbf;
+    }
+
+    #result {
+      margin-top: 30px;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-card h2 {
+      margin-top: 0;
+      color: #222;
+    }
+
+    .product-card p {
+      margin: 8px 0;
+      color: #555;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Product List</h1>
+    <button onclick="loadProducts()">Load Products</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function loadProducts() {
+      const resultDiv = document.getElementById("result");
+
+      try {
+        const response = await fetch("products.json");
+
+        if (!response.ok) {
+          throw new Error("Could not load products.json");
+        }
+
+        const data = await response.json();
+
+        let output = "";
+
+        data.products.forEach(product => {
+          output += `
+            <div class="product-card">
+              <h2>${product.name}</h2>
+              <p>${product.description}</p>
+              <p><span class="label">Price:</span> $${product.price}</p>
+              <p><span class="label">Categories:</span> ${product.category.join(", ")}</p>
+            </div>
+          `;
+        });
+
+        resultDiv.innerHTML = output;
+      } catch (error) {
+        resultDiv.innerHTML = `<p class="error">Error loading product data.</p>`;
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
