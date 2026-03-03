@@ -1,0 +1,64 @@
+{
+  "products": [
+    {
+      "name": "Vintage T-Shirt",
+      "description": "Tie-dye Grateful Dead T-shirt",
+      "price": 35,
+      "category": ["clothing", "vintage"]
+    },
+    {
+      "name": "Wireless Mouse",
+      "description": "Ergonomic Bluetooth mouse with silent clicks",
+      "price": 25,
+      "category": ["electronics", "office"]
+    },
+    {
+      "name": "Ceramic Coffee Mug",
+      "description": "Handmade 12 oz mug for coffee or tea",
+      "price": 18,
+      "category": ["kitchen", "home"]
+    },
+    {
+      "name": "Yoga Mat",
+      "description": "Non-slip exercise mat with extra cushioning",
+      "price": 30,
+      "category": ["fitness", "sports"]
+    },
+    {
+      "name": "Notebook Set",
+      "description": "Set of 3 lined notebooks for school or work",
+      "price": 12,
+      "category": ["school", "office"]
+    },
+    {
+      "name": "LED Desk Lamp",
+      "description": "Adjustable desk lamp with brightness settings",
+      "price": 40,
+      "category": ["home", "office", "electronics"]
+    },
+    {
+      "name": "Running Shoes",
+      "description": "Lightweight shoes designed for daily running",
+      "price": 65,
+      "category": ["clothing", "sports"]
+    },
+    {
+      "name": "Backpack",
+      "description": "Water-resistant backpack with laptop compartment",
+      "price": 50,
+      "category": ["school", "travel"]
+    },
+    {
+      "name": "Water Bottle",
+      "description": "Insulated stainless steel bottle",
+      "price": 22,
+      "category": ["fitness", "kitchen", "travel"]
+    },
+    {
+      "name": "Bluetooth Speaker",
+      "description": "Portable speaker with high-quality sound",
+      "price": 55,
+      "category": ["electronics", "entertainment"]
+    }
+  ]
+}
